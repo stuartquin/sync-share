@@ -1,0 +1,15 @@
+{% load staticfiles %}
+
+<a href="javascript:history.back()">Back</a>
+<ul>
+{% for file in files %}
+  <li>
+  {% if file.is_dir %}
+    <a class="dir" href="/browser?path={{file.full_path}}">{{ file.name }}</a>
+  {% else %}
+    <a class="file" href="browser/open?path={{file.full_path}}">{{ file.name }}</a>
+  {% endif %}
+  </li>
+{% endfor %}
+</ul>
+<script src="{% static "js/main.js" %}"></script>
