@@ -17,12 +17,22 @@ def get_path(request):
     else:
         return files.BASE
 
+
+def get_view_content(request):
+    if "view" in request.GET:
+        return files.load(request.GET["view"])
+
+
 @login_required(login_url='/admin/')
 def index(request):
+    path = get_path(request)
     context = {
-        "files": files.list(get_path(request)),
+        "files": files.list(path),
+        "path": path,
+        "view": get_view_content(request)
     }
     return render(request, 'browser/index.html', context)
+
 
 @login_required(login_url='/admin/')
 def open(request):
@@ -30,6 +40,7 @@ def open(request):
         "content": files.load(get_path(request))
     }
     return render(request, 'browser/view.html', context)
+
 
 @login_required(login_url='/admin/')
 def list_files(request):

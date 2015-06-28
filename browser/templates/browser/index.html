@@ -1,15 +1,44 @@
-{% load staticfiles %}
 
-<a href="javascript:history.back()">Back</a>
-<ul>
-{% for file in files %}
-  <li>
-  {% if file.is_dir %}
-    <a class="dir" href="/browser?path={{file.full_path}}">{{ file.name }}</a>
-  {% else %}
-    <a class="file" href="browser/open?path={{file.full_path}}">{{ file.name }}</a>
-  {% endif %}
-  </li>
-{% endfor %}
-</ul>
+{% load staticfiles %}
+{% load browser_extras %}
+<html>
+<head>
+  <link rel="stylesheet" href="{% static "js/bootstrap-3.3.5-dist/css/bootstrap.min.css" %}" />
+  <link rel="stylesheet" href="{% static "js/prism/prism.css" %}" />
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+      <a href="javascript:history.back()">Back</a>
+      <ul class="nav nav-sidebar">
+      {% for file in files %}
+        {% if view and file.full_path == view.path %}
+         <li class="active">
+        {% else %}
+         <li>
+        {% endif %}
+        {% if file.is_dir %}
+          <a class="dir" href="{{ file|browse_path:path }}">{{ file.name }}</a>
+        {% else %}
+          <a class="file" href="{{ file|browse_path:path }}">{{ file.name }}</a>
+        {% endif %}
+        </li>
+      {% endfor %}
+      </ul>
+    </div> <!-- sidebar -->
+  
+    <div class="col-sm-9 col-md-10 main">
+    {% if view %}
+      {% if view.lang %}
+      <pre><code class="language-{{ view.lang }}">{{view.content}}</code></pre>
+      {% endif %}
+    {% endif %}
+    </div><!-- main -->
+
+  </div> <!-- row -->
+</div> <!-- container-fluid -->
+<script src="{% static "js/prism/prism.js" %}"></script>
 <script src="{% static "js/main.js" %}"></script>
+</body>
+</html>
